@@ -16,7 +16,6 @@ public class LanguageCommand implements CommandExecutor {
             return true;
         }
 
-        // Das Inventar öffnen
         new LanguageInv().open(player);
 
         return true;
