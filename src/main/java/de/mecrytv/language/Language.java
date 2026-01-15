@@ -1,6 +1,7 @@
 package de.mecrytv.language;
 
 import de.mecrytv.DatabaseAPI;
+import de.mecrytv.language.commands.LanguageCommand;
 import de.mecrytv.language.listeners.ConnectionListener;
 import de.mecrytv.language.manager.ConfigManager;
 import de.mecrytv.language.model.LanguageModel;
@@ -47,6 +48,7 @@ public final class Language extends JavaPlugin {
         }
 
         Bukkit.getPluginManager().registerEvents(new ConnectionListener(), this);
+        getCommand("language").setExecutor(new LanguageCommand());
     }
 
     @Override
