@@ -11,10 +11,10 @@ public class LanguageModel implements ICacheModel {
 
     public LanguageModel() {}
 
-    public LanguageModel(String playerUUID, String languageCode, boolean firstJoin) {
+    public LanguageModel(String playerUUID, String languageCode) {
         this.playerUUID = playerUUID;
         this.languageCode = languageCode;
-        this.firstJoin = firstJoin;
+        this.firstJoin = true;
     }
 
     @Override

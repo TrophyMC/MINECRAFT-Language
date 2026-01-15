@@ -2,6 +2,7 @@ package de.mecrytv.language;
 
 import de.mecrytv.DatabaseAPI;
 import de.mecrytv.language.manager.ConfigManager;
+import de.mecrytv.language.model.LanguageModel;
 import de.mecrytv.languageapi.LanguageAPI;
 import de.mecrytv.utils.DatabaseConfig;
 import net.kyori.adventure.text.Component;
@@ -35,6 +36,8 @@ public final class Language extends JavaPlugin {
                 config.getString("redis.password")
         );
         this.databaseAPI = new DatabaseAPI(dbConfig);
+
+        databaseAPI.registerModel("language", LanguageModel::new);
 
         if (Bukkit.getPluginManager().getPlugin("HeadDatabase") != null) {
             getLogger().info("✅ HeadDatabase-API erfolgreich gefunden!");
