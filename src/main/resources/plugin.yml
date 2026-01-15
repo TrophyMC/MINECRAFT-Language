@@ -2,3 +2,7 @@ name: Language
 version: '1.0.0'
 main: de.mecrytv.language.Language
 api-version: '1.21'
+commands:
+  language:
+    description: Change your language
+    aliases: [lang]
