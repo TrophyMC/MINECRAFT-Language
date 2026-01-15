@@ -1,6 +1,7 @@
 package de.mecrytv.language;
 
 import de.mecrytv.DatabaseAPI;
+import de.mecrytv.language.listeners.ConnectionListener;
 import de.mecrytv.language.manager.ConfigManager;
 import de.mecrytv.language.model.LanguageModel;
 import de.mecrytv.languageapi.LanguageAPI;
@@ -44,6 +45,8 @@ public final class Language extends JavaPlugin {
         } else {
             getLogger().warning("❌ HeadDatabase wurde nicht gefunden! GUI-Flaggen funktionieren nicht.");
         }
+
+        Bukkit.getPluginManager().registerEvents(new ConnectionListener(), this);
     }
 
     @Override
