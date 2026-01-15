@@ -10,6 +10,7 @@ version = '1.0.0'
 repositories {
     mavenCentral()
     mavenLocal()
+    maven { url = "https://repo.triumphteam.co/namespaces/maven-public/" }
     maven {
         name = "papermc-repo"
         url = "https://repo.papermc.io/repository/maven-public/"
