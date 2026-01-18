@@ -106,7 +106,10 @@ public class LanguageInv {
             LanguageModel m = (model == null) ? new LanguageModel(uuid.toString(), newLang) : model;
             m.setLanguageCode(newLang);
             m.setFirstJoin(false);
-            DatabaseAPI.<LanguageModel>set("language", m);
+
+            DatabaseAPI.getInstance().setGenericAsync("language", "language", "id", "data", uuid.toString(), m.serialize());
+
+            plugin.getLanguageAPI().getProfile(uuid, newLang).setLanguageCode(newLang);
         });
 
         TranslationUtils.sendTranslation(player, newLang, "messages.language_changed",

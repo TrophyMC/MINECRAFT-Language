@@ -35,14 +35,14 @@ public class TranslationUtils {
     public static Component sendGUITranslation(String langCode, String configKey, String... replacements) {
         Language plugin = Language.getInstance();
         LanguageAPI languageAPI = plugin.getLanguageAPI();
-        MiniMessage miniMessage = MiniMessage.miniMessage();
 
         String message = languageAPI.getTranslation(langCode, configKey);
-        if ((message == null || message.isEmpty()) && !langCode.equals("en_US")) {
-            message = languageAPI.getTranslation("en_US", configKey);
+
+        if ((message == null || message.isEmpty() || message.contains("Missing Lang")) && !langCode.equals("en_US")) {
+            message = plugin.getLanguageAPI().getTranslation("en_US", configKey);
         }
 
-        if (message == null) message = configKey;
+        if (message == null || message.contains("Missing Lang")) message = configKey;
 
         if (replacements != null && replacements.length > 1) {
             for (int i = 0; i < replacements.length; i += 2) {
@@ -54,6 +54,6 @@ public class TranslationUtils {
             }
         }
 
-        return miniMessage.deserialize(message);
+        return MiniMessage.miniMessage().deserialize(message);
     }
 }
