@@ -31,7 +31,6 @@ tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.Shadow
     archiveVersion.set('')
 
     relocate 'dev.triumphteam.gui', 'de.mecrytv.libs.gui'
-    relocate 'de.mecrytv.languageapi', 'de.mecrytv.libs.languageapi'
     relocate 'de.mecrytv.databaseapi', 'de.mecrytv.libs.databaseapi'
 }
 
