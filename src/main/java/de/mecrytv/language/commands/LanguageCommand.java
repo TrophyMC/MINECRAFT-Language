@@ -63,7 +63,7 @@ public class LanguageCommand implements TabExecutor {
         Language plugin = Language.getInstance();
 
         plugin.getLanguageAPI().reloadAll();
-        TranslationUtils.sendTranslation(sender, ".commands.reload.files_success");
+        TranslationUtils.sendTranslation(sender, "commands.reload.files_success");
 
         int playercount = Bukkit.getOnlinePlayers().size();
         TranslationUtils.sendTranslation(sender, "commands.reload.profiles_start", "{count}", String.valueOf(playercount));
