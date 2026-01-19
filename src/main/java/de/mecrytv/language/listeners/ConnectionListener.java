@@ -34,11 +34,9 @@ public class ConnectionListener implements Listener {
                 return;
             }
 
-            LanguageModel currentLanguage = model;
-
-            if (currentLanguage == null) {
-                currentLanguage = new LanguageModel(playerUUID.toString(), "en_US");
-            }
+            LanguageModel currentLanguage = (model == null)
+                    ? new LanguageModel(playerUUID.toString(), "en_US")
+                    : model;
 
             ILanguageProfile profile = plugin.getLanguageAPI().getProfile(playerUUID, currentLanguage.getLanguageCode());
             profile.setLanguageCode(currentLanguage.getLanguageCode());
@@ -47,7 +45,8 @@ public class ConnectionListener implements Listener {
                 triggerFirstJoinEffects(player, currentLanguage);
 
                 currentLanguage.setFirstJoin(false);
-                DatabaseAPI.<LanguageModel>set("language", currentLanguage);
+
+                DatabaseAPI.set("language", currentLanguage);
             }
         });
     }

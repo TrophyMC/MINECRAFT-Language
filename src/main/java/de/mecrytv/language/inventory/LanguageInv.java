@@ -27,29 +27,27 @@ public class LanguageInv {
         UUID uuid = player.getUniqueId();
         Language plugin = Language.getInstance();
 
-        DatabaseAPI.<LanguageModel>get("language", uuid.toString()).thenAccept(model -> {
-            LanguageModel finalModel = (model == null) ? new LanguageModel(uuid.toString(), "en_US") : model;
-            String currentLang = finalModel.getLanguageCode();
+        ILanguageProfile profile = plugin.getLanguageAPI().getProfile(uuid, "en_US");
+        String currentLang = profile.getLanguageCode();
 
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                Component title = TranslationUtils.sendGUITranslation(currentLang, "gui.language.title");
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Component title = TranslationUtils.sendGUITranslation(currentLang, "gui.language.title");
 
-                Gui gui = Gui.gui()
-                        .title(title)
-                        .rows(3)
-                        .disableAllInteractions()
-                        .create();
+            Gui gui = Gui.gui()
+                    .title(title)
+                    .rows(3)
+                    .disableAllInteractions()
+                    .create();
 
-                ItemStack borderPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
-                borderPane.editMeta(meta -> meta.displayName(Component.empty()));
-                gui.getFiller().fillBorder(ItemBuilder.from(borderPane).asGuiItem());
+            ItemStack borderPane = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+            borderPane.editMeta(meta -> meta.displayName(Component.empty()));
+            gui.getFiller().fillBorder(ItemBuilder.from(borderPane).asGuiItem());
 
-                plugin.getLanguageAPI().getConfigs().keySet().forEach(langCode -> {
-                    gui.addItem(createLanguageHead(player, langCode, currentLang));
-                });
-
-                gui.open(player);
+            plugin.getLanguageAPI().getConfigs().keySet().forEach(langCode -> {
+                gui.addItem(createLanguageHead(player, langCode, currentLang));
             });
+
+            gui.open(player);
         });
     }
 
@@ -60,14 +58,13 @@ public class LanguageInv {
         ItemStack headItem = headDatabaseAPI.getItemHead(headId);
         if (headItem == null) headItem = new ItemStack(Material.PAPER);
 
-        boolean isActive = langCode.equals(currentLang);
+        boolean isActive = langCode.equalsIgnoreCase(currentLang);
 
         Component displayName = TranslationUtils.sendGUITranslation(currentLang, "gui.language.lang_name_" + langCode);
         Component description = TranslationUtils.sendGUITranslation(currentLang, "gui.language.lang_desc_" + langCode);
 
         headItem.editMeta(meta -> {
             meta.displayName(displayName);
-
             List<Component> lore = new ArrayList<>();
             lore.add(description);
             lore.add(Component.empty());
@@ -85,6 +82,7 @@ public class LanguageInv {
 
         return builder.asGuiItem(event -> {
             if (isActive) return;
+
             updateLanguage(player, langCode);
             player.closeInventory();
         });
@@ -96,21 +94,18 @@ public class LanguageInv {
 
         ILanguageProfile profile = plugin.getLanguageAPI().getProfile(uuid, "en_US");
         String oldLangCode = profile.getLanguageCode();
-
         profile.setLanguageCode(newLang);
-
-        String oldLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + oldLangCode);
-        String newLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + newLang);
 
         DatabaseAPI.<LanguageModel>get("language", uuid.toString()).thenAccept(model -> {
             LanguageModel m = (model == null) ? new LanguageModel(uuid.toString(), newLang) : model;
             m.setLanguageCode(newLang);
             m.setFirstJoin(false);
 
-            DatabaseAPI.getInstance().setGenericAsync("language", "language", "id", "data", uuid.toString(), m.serialize());
-
-            plugin.getLanguageAPI().getProfile(uuid, newLang).setLanguageCode(newLang);
+            DatabaseAPI.set("language", m);
         });
+
+        String oldLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + oldLangCode);
+        String newLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + newLang);
 
         TranslationUtils.sendTranslation(player, newLang, "messages.language_changed",
                 "{oldLang}", oldLangName,

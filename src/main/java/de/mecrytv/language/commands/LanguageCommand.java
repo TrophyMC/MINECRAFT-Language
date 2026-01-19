@@ -12,7 +12,7 @@ public class LanguageCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
 
         if (!(commandSender instanceof Player player)) {
-            commandSender.sendMessage("This command can only be used by players.");
+            commandSender.sendMessage("§cThis command can only be used by players.");
             return true;
         }
 
