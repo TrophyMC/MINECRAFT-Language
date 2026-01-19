@@ -30,9 +30,7 @@ public class ConnectionListener implements Listener {
 
         DatabaseAPI.<LanguageModel>get("language", playerUUID.toString()).thenAccept(model -> {
 
-            if (!player.isOnline()) {
-                return;
-            }
+            if (!player.isOnline()) return;
 
             LanguageModel currentLanguage = (model == null)
                     ? new LanguageModel(playerUUID.toString(), "en_US")
@@ -43,9 +41,7 @@ public class ConnectionListener implements Listener {
 
             if (currentLanguage.isFirstJoin()) {
                 triggerFirstJoinEffects(player, currentLanguage);
-
                 currentLanguage.setFirstJoin(false);
-
                 DatabaseAPI.set("language", currentLanguage);
             }
         });
@@ -61,28 +57,32 @@ public class ConnectionListener implements Listener {
 
         Bukkit.getScheduler().runTask(plugin, () -> {
             String lang = model.getLanguageCode();
-            MiniMessage miniMessage = MiniMessage.miniMessage();
+            MiniMessage mm = MiniMessage.miniMessage();
 
             String mainTitleRaw = plugin.getLanguageAPI().getTranslation(lang, "listeners.firstjoin.join_title");
             String subTitleRaw = plugin.getLanguageAPI().getTranslation(lang, "listeners.firstjoin.join_subtitle");
 
             player.showTitle(Title.title(
-                    miniMessage.deserialize(mainTitleRaw),
-                    miniMessage.deserialize(subTitleRaw),
+                    mm.deserialize(mainTitleRaw),
+                    mm.deserialize(subTitleRaw),
                     Title.Times.times(Duration.ofMillis(500), Duration.ofMillis(4000), Duration.ofMillis(1000))
             ));
 
-            Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
-            FireworkMeta fwm = fw.getFireworkMeta();
-            fwm.addEffect(FireworkEffect.builder()
-                    .withColor(Color.ORANGE, Color.YELLOW)
-                    .withFade(Color.WHITE)
-                    .with(FireworkEffect.Type.BALL_LARGE)
-                    .trail(true)
-                    .flicker(true)
-                    .build());
-            fwm.setPower(1);
-            fw.setFireworkMeta(fwm);
+            spawnFirework(player);
         });
+    }
+
+    private void spawnFirework(Player player) {
+        Firework fw = player.getWorld().spawn(player.getLocation(), Firework.class);
+        FireworkMeta fwm = fw.getFireworkMeta();
+        fwm.addEffect(FireworkEffect.builder()
+                .withColor(Color.ORANGE, Color.YELLOW)
+                .withFade(Color.WHITE)
+                .with(FireworkEffect.Type.BALL_LARGE)
+                .trail(true)
+                .flicker(true)
+                .build());
+        fwm.setPower(1);
+        fw.setFireworkMeta(fwm);
     }
 }

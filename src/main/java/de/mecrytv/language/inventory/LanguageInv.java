@@ -31,7 +31,7 @@ public class LanguageInv {
         String currentLang = profile.getLanguageCode();
 
         Bukkit.getScheduler().runTask(plugin, () -> {
-            Component title = TranslationUtils.sendGUITranslation(currentLang, "gui.language.title");
+            Component title = TranslationUtils.sendGUITranslation(player, "gui.language.title");
 
             Gui gui = Gui.gui()
                     .title(title)
@@ -60,8 +60,8 @@ public class LanguageInv {
 
         boolean isActive = langCode.equalsIgnoreCase(currentLang);
 
-        Component displayName = TranslationUtils.sendGUITranslation(currentLang, "gui.language.lang_name_" + langCode);
-        Component description = TranslationUtils.sendGUITranslation(currentLang, "gui.language.lang_desc_" + langCode);
+        Component displayName = TranslationUtils.sendGUITranslation(player, "gui.language.lang_name_" + langCode);
+        Component description = TranslationUtils.sendGUITranslation(player, "gui.language.lang_desc_" + langCode);
 
         headItem.editMeta(meta -> {
             meta.displayName(displayName);
@@ -70,9 +70,9 @@ public class LanguageInv {
             lore.add(Component.empty());
 
             if (isActive) {
-                lore.add(TranslationUtils.sendGUITranslation(currentLang, "gui.language.status_active"));
+                lore.add(TranslationUtils.sendGUITranslation(player, "gui.language.status_active"));
             } else {
-                lore.add(TranslationUtils.sendGUITranslation(currentLang, "gui.language.status_selectable"));
+                lore.add(TranslationUtils.sendGUITranslation(player, "gui.language.status_selectable"));
             }
             meta.lore(lore);
         });
@@ -82,7 +82,6 @@ public class LanguageInv {
 
         return builder.asGuiItem(event -> {
             if (isActive) return;
-
             updateLanguage(player, langCode);
             player.closeInventory();
         });
@@ -94,6 +93,7 @@ public class LanguageInv {
 
         ILanguageProfile profile = plugin.getLanguageAPI().getProfile(uuid, "en_US");
         String oldLangCode = profile.getLanguageCode();
+
         profile.setLanguageCode(newLang);
 
         DatabaseAPI.<LanguageModel>get("language", uuid.toString()).thenAccept(model -> {
@@ -107,7 +107,7 @@ public class LanguageInv {
         String oldLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + oldLangCode);
         String newLangName = plugin.getLanguageAPI().getTranslation(newLang, "gui.language.lang_name_" + newLang);
 
-        TranslationUtils.sendTranslation(player, newLang, "messages.language_changed",
+        TranslationUtils.sendTranslation(player, "messages.language_changed",
                 "{oldLang}", oldLangName,
                 "{newLang}", newLangName
         );
