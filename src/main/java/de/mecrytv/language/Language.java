@@ -10,6 +10,7 @@ import de.mecrytv.utils.DatabaseConfig;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.nio.file.Paths;
@@ -26,6 +27,8 @@ public final class Language extends JavaPlugin {
         instance = this;
         this.languageAPI = new LanguageAPI(Paths.get("/home/minecraft/languages/"));
         this.config = new ConfigManager(getDataFolder().toPath(), "config.json");
+
+        Bukkit.getServicesManager().register(LanguageAPI.class, this.languageAPI, this, ServicePriority.Normal);
 
         DatabaseConfig dbConfig = new DatabaseConfig(
                 config.getString("mariadb.host"),
